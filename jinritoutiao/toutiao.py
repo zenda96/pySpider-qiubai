@@ -24,6 +24,9 @@ headers = {
 }
 
 def get_page_index(offset,keyword):
+    ''' 
+        获取索引页
+    '''
     data = {
         'offset':offset,
         'format':'json',
@@ -45,12 +48,18 @@ def get_page_index(offset,keyword):
         return None
 
 def parse_page_index(html):
+    ''' 
+        解析索引页
+    '''
     data = json.loads(html)
     if data and 'data' in data.keys():
         for item in data.get('data'):
             yield item.get('article_url')
 
 def get_page_detail(url):
+    ''' 
+        获取详情页
+    '''
     reponse = requests.get(url,headers=headers)
     try:
         if reponse.status_code==200:
@@ -62,6 +71,9 @@ def get_page_detail(url):
         return None
 
 def parse_page_detail(html,url):
+    ''' 
+        解析详情页
+    '''
     soup = BeautifulSoup(html,'lxml')
     title = soup.select('title')[0].get_text()
     image_pattern = re.compile('gallery: JSON.parse\("(.*?)"\),.*?siblingList:',re.S)
@@ -84,12 +96,18 @@ def parse_page_detail(html,url):
         print('未匹配到结果')   
 
 def save_to_mongo(result):
+    ''' 
+        保存到mongo数据库
+    '''
     if db[MONGO_TABLE].insert(result):
         print('插入成功')
         return True
     return False
 
 def download_image(url):
+    ''' 
+        下载图片
+    '''
     print('----------正在下载'+url)
     reponse = requests.get(url,headers=headers)
     try:
@@ -102,6 +120,9 @@ def download_image(url):
         return None
 
 def save_image(content):
+    ''' 
+        保存图片
+    '''
     file_path = '{0}/toutiaoimages/{1}.{2}'.format(os.getcwd(),md5(content).hexdigest(),'jpg')
     if not os.path.exists(file_path):
         with open(file_path,'wb') as f:
