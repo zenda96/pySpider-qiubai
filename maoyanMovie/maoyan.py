@@ -34,7 +34,7 @@ def parse_one_page(html):
             'star':item[1].strip()[3:],
             'time':item[2].strip()[5:],
             'score':item[3]+'.'+item[4]
-        }
+        }git 
 
 def write_to_txt(txt):
     with open('top100.txt','a',encoding='utf-8') as f:
